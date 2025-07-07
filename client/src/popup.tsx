@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client"
-import { PopupDashboard } from "./components/PopupDashboard"
+import { PopupDashboard } from "./components/Popup/PopupDashboard"
 import "./index.css"
 
 const container = document.getElementById("popup-root")

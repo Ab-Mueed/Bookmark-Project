@@ -1,6 +1,6 @@
 import React from "react"
-import { Button } from "./ui/Button"
-import type { UserSettings } from "../types"
+import { Button } from "../ui/Button"
+import type { UserSettings } from "../../types"
 
 interface DashboardHeaderProps {
   settings: UserSettings

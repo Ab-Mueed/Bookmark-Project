@@ -1,5 +1,5 @@
 import React from "react"
-import type { CategorizedBookmark } from "../types"
+import type { CategorizedBookmark } from "../../types"
 
 interface PreviewCategoryListProps {
   categorizedBookmarks: CategorizedBookmark[]

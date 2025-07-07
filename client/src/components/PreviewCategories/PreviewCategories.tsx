@@ -1,9 +1,9 @@
 import React from "react"
-import { Modal } from "./ui/Modal"
+import { Modal } from "../ui/Modal"
 import { PreviewCategoriesHeader } from "./PreviewCategoriesHeader"
 import { PreviewCategoryList } from "./PreviewCategoryList"
 import { PreviewCategoriesActions } from "./PreviewCategoriesActions"
-import type { CategorizedBookmark } from "../types"
+import type { CategorizedBookmark } from "../../types"
 
 interface PreviewCategoriesProps {
   isOpen: boolean

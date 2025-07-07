@@ -1,7 +1,7 @@
 import React from "react"
-import { NestedSpace } from "./ui/NestedSpace"
-import { getSpaceColor, groupBookmarksByCategory } from "../utils/bookmark-utils"
-import type { CategorizedBookmark } from "../types"
+import { NestedSpace } from "../ui/NestedSpace"
+import { getSpaceColor, groupBookmarksByCategory } from "../../utils/bookmark-utils"
+import type { CategorizedBookmark } from "../../types"
 
 interface BookmarkSpacesViewProps {
   bookmarks: CategorizedBookmark[]

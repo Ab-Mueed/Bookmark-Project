@@ -1,6 +1,6 @@
 import React from "react"
-import { Button } from "./ui/Button"
-import { LoadingSpinner } from "./ui/LoadingSpinner"
+import { Button } from "../ui/Button"
+import { LoadingSpinner } from "../ui/LoadingSpinner"
 
 interface PopupActionsProps {
   isLoading: boolean

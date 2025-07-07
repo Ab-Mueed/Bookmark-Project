@@ -1,8 +1,9 @@
-import { useSetupWizard } from "../hooks/useSetupWizard"
+import React from "react"
 import { SetupWizardHeader } from "./SetupWizardHeader"
 import { SetupWizardPersonaStep } from "./SetupWizardPersonaStep"
 import { SetupWizardStructureStep } from "./SetupWizardStructureStep"
-import type { UserSettings } from "../types"
+import { useSetupWizard } from "../../hooks/useSetupWizard"
+import type { UserSettings } from "../../types"
 
 interface SetupWizardProps {
   onComplete: (settings: UserSettings) => void

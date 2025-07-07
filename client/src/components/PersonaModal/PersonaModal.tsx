@@ -1,11 +1,11 @@
 "use client"
 
-import type React from "react"
-import { Modal } from "./ui/Modal"
-import { usePersonaModal } from "../hooks/usePersonaModal"
+import React from "react"
+import { Modal } from "../ui/Modal"
 import { PersonaModalHeader } from "./PersonaModalHeader"
 import { PersonaInput } from "./PersonaInput"
 import { PersonaModalActions } from "./PersonaModalActions"
+import { usePersonaModal } from "../../hooks/usePersonaModal"
 
 interface PersonaModalProps {
   isOpen: boolean
