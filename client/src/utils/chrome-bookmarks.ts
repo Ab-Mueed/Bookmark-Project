@@ -45,28 +45,24 @@ export class ChromeBookmarks {
       const categorizedStore =
         (await ChromeStorage.get<CategorizedBookmarkStore>(STORAGE_KEYS.CATEGORIZED_BOOKMARKS)) || {}
 
-      // Filter out already categorized bookmarks and those in categorized folders
       const uncategorizedBookmarks: Bookmark[] = []
-      
+
       for (const bookmark of allBookmarks) {
         // Skip bookmarks without IDs
-        if (!bookmark.id) {
-          continue
-        }
-        
-        // Skip if already categorized in storage
-        const storedBookmark = categorizedStore[bookmark.id]
-        if (storedBookmark) {
-          continue
-        }
-        
-        // Check if bookmark is in a categorized folder
+        if (!bookmark.id) continue
+
+        // If already categorized in storage, skip
+        if (categorizedStore[bookmark.id]) continue
+
+        // Check if bookmark is in a categorized folder (under '📚 Categorized Bookmarks', but not directly under it or in 'Uncategorized')
         const isInCategorizedFolder = await this.isInCategorizedFolder(bookmark)
-        if (!isInCategorizedFolder) {
-          uncategorizedBookmarks.push(bookmark)
-        }
+        if (isInCategorizedFolder) continue
+
+        // If not in a categorized folder, treat as uncategorized
+        // This includes bookmarks in the Bookmarks Bar, in folders not under '📚 Categorized Bookmarks', or loose in 'Other Bookmarks'
+        uncategorizedBookmarks.push(bookmark)
       }
-      
+
       return uncategorizedBookmarks
     } catch (error) {
       console.error("Error fetching uncategorized bookmarks:", error)
