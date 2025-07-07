@@ -1,6 +1,9 @@
 import type { Bookmark, ChromeBookmarkNode, BookmarkWithDescription, CategorizedBookmarkStore, CategorizedBookmark } from "../types"
 import { ChromeStorage, STORAGE_KEYS } from "./chrome-storage"
 
+// Set to true for local development to see fetch errors, false for production/extension
+const IS_DEV = false;
+
 export class ChromeBookmarks {
   static async getAll(): Promise<Bookmark[]> {
     try {
@@ -83,7 +86,9 @@ export class ChromeBookmarks {
             description: description || bookmark.title // Fallback to title if no description
           }
         } catch (error) {
-          console.warn(`Failed to fetch description for ${bookmark.url}:`, error)
+          if (IS_DEV) {
+            console.warn(`Failed to fetch description for ${bookmark.url}:`, error)
+          }
           return {
             ...bookmark,
             description: bookmark.title // Fallback to title
@@ -120,7 +125,9 @@ export class ChromeBookmarks {
       
       return null
     } catch (error) {
-      console.warn(`Failed to fetch description for ${url}:`, error)
+      if (IS_DEV) {
+        console.warn(`Failed to fetch description for ${url}:`, error)
+      }
       return null
     }
   }
