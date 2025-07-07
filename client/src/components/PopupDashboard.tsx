@@ -13,6 +13,7 @@ import type {
   CategorizedBookmark,
   CategorizedBookmarkStore,
 } from "../types"
+import { PreviewCategories } from "./PreviewCategories"
 
 export const PopupDashboard: React.FC = () => {
   const [settings, setSettings] = useState<UserSettings | null>(null)
@@ -20,6 +21,8 @@ export const PopupDashboard: React.FC = () => {
   const [categorizedCount, setCategorizedCount] = useState(0)
   const [uncategorizedCount, setUncategorizedCount] = useState(0)
   const [showSettings, setShowSettings] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewBookmarks, setPreviewBookmarks] = useState<CategorizedBookmark[]>([])
 
   useEffect(() => {
     loadData()
@@ -51,6 +54,7 @@ export const PopupDashboard: React.FC = () => {
       const uncategorizedBookmarks = await ChromeBookmarks.getUncategorized()
 
       if (uncategorizedBookmarks.length === 0) {
+        setIsLoading(false)
         return
       }
 
@@ -68,34 +72,52 @@ export const PopupDashboard: React.FC = () => {
       }
 
       if (response.data) {
-        const categorizedStore =
-          (await ChromeStorage.get<CategorizedBookmarkStore>(STORAGE_KEYS.CATEGORIZED_BOOKMARKS)) || {}
-
-        response.data.forEach((bookmark: CategorizedBookmark) => {
-          if (bookmark.id) {
-            categorizedStore[bookmark.id] = {
-              bookmark,
-              categorizedAt: Date.now(),
-            }
-          }
-        })
-
-        await ChromeStorage.set(STORAGE_KEYS.CATEGORIZED_BOOKMARKS, categorizedStore)
-
-        // Organize bookmarks in Chrome's native bookmark system
-        try {
-          await ChromeBookmarks.organizeBookmarksInChrome(response.data, settings.structure === "flattened" ? "flatten" : "nested")
-        } catch (chromeError) {
-          console.warn("Failed to organize in Chrome bookmarks:", chromeError)
-        }
-
-        await loadData()
+        // Show preview modal instead of immediately organizing
+        setPreviewBookmarks(response.data)
+        setPreviewOpen(true)
       }
     } catch (error) {
       console.error("Categorization error:", error)
-    } finally {
       setIsLoading(false)
     }
+  }
+
+  // Accept: organize bookmarks and update storage
+  const handleAcceptPreview = async () => {
+    setPreviewOpen(false)
+    setIsLoading(true)
+    try {
+      if (!settings) {
+        setIsLoading(false)
+        setPreviewBookmarks([])
+        return
+      }
+      const categorizedStore =
+        (await ChromeStorage.get<CategorizedBookmarkStore>(STORAGE_KEYS.CATEGORIZED_BOOKMARKS)) || {}
+      previewBookmarks.forEach((bookmark: CategorizedBookmark) => {
+        if (bookmark.id) {
+          categorizedStore[bookmark.id] = {
+            bookmark,
+            categorizedAt: Date.now(),
+          }
+        }
+      })
+      await ChromeStorage.set(STORAGE_KEYS.CATEGORIZED_BOOKMARKS, categorizedStore)
+      await ChromeBookmarks.organizeBookmarksInChrome(previewBookmarks, settings.structure === "flattened" ? "flatten" : "nested")
+      await loadData()
+    } catch (error) {
+      console.error("Error organizing bookmarks:", error)
+    } finally {
+      setIsLoading(false)
+      setPreviewBookmarks([])
+    }
+  }
+
+  // Deny: abort process
+  const handleDenyPreview = () => {
+    setPreviewOpen(false)
+    setIsLoading(false)
+    setPreviewBookmarks([])
   }
 
   const handleOpenDashboard = () => {
@@ -210,6 +232,13 @@ export const PopupDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <PreviewCategories
+        isOpen={previewOpen}
+        onAccept={handleAcceptPreview}
+        onDeny={handleDenyPreview}
+        categorizedBookmarks={previewBookmarks}
+      />
     </div>
   )
 } 

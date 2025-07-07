@@ -13,6 +13,7 @@ import type {
   CategorizedBookmark,
   CategorizedBookmarkStore,
 } from "../types"
+import { PreviewCategories } from "../components/PreviewCategories"
 
 export const Dashboard: React.FC = () => {
   const [settings, setSettings] = useState<UserSettings | null>(null)
@@ -23,6 +24,8 @@ export const Dashboard: React.FC = () => {
   const [viewMode, setViewMode] = useState<'spaces' | 'list' | 'columns'>('columns')
 
   const [isCategorizing, setIsCategorizing] = useState(false)
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewBookmarks, setPreviewBookmarks] = useState<CategorizedBookmark[]>([])
 
   useEffect(() => {
     loadData()
@@ -88,6 +91,8 @@ export const Dashboard: React.FC = () => {
       const uncategorizedBookmarks = await ChromeBookmarks.getUncategorized()
 
       if (uncategorizedBookmarks.length === 0) {
+        setIsLoading(false)
+        setIsCategorizing(false)
         return
       }
 
@@ -105,38 +110,58 @@ export const Dashboard: React.FC = () => {
       }
 
       if (response.data) {
-        const categorizedStore =
-          (await ChromeStorage.get<CategorizedBookmarkStore>(STORAGE_KEYS.CATEGORIZED_BOOKMARKS)) || {}
-
-        response.data.forEach((bookmark: CategorizedBookmark) => {
-          if (bookmark.id) {
-            categorizedStore[bookmark.id] = {
-              bookmark,
-              categorizedAt: Date.now(),
-            }
-          }
-        })
-
-        await ChromeStorage.set(STORAGE_KEYS.CATEGORIZED_BOOKMARKS, categorizedStore)
-
-        // Organize bookmarks in Chrome's native bookmark system
-        try {
-          await ChromeBookmarks.organizeBookmarksInChrome(response.data, settings.structure === "flattened" ? "flatten" : "nested")
-        } catch (chromeError) {
-          console.warn("Failed to organize in Chrome bookmarks:", chromeError)
-        }
-
-        await loadData()
-        
-        // Add a small delay to ensure Chrome bookmark operations complete
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        // Show preview modal instead of immediately organizing
+        setPreviewBookmarks(response.data)
+        setPreviewOpen(true)
       }
     } catch (error) {
       console.error("Categorization error:", error)
-    } finally {
       setIsLoading(false)
       setIsCategorizing(false)
     }
+  }
+
+  // Accept: organize bookmarks and update storage
+  const handleAcceptPreview = async () => {
+    setPreviewOpen(false)
+    setIsLoading(true)
+    setIsCategorizing(true)
+    try {
+      if (!settings) {
+        setIsLoading(false)
+        setIsCategorizing(false)
+        setPreviewBookmarks([])
+        return
+      }
+      const categorizedStore =
+        (await ChromeStorage.get<CategorizedBookmarkStore>(STORAGE_KEYS.CATEGORIZED_BOOKMARKS)) || {}
+      previewBookmarks.forEach((bookmark: CategorizedBookmark) => {
+        if (bookmark.id) {
+          categorizedStore[bookmark.id] = {
+            bookmark,
+            categorizedAt: Date.now(),
+          }
+        }
+      })
+      await ChromeStorage.set(STORAGE_KEYS.CATEGORIZED_BOOKMARKS, categorizedStore)
+      await ChromeBookmarks.organizeBookmarksInChrome(previewBookmarks, settings.structure === "flattened" ? "flatten" : "nested")
+      await loadData()
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    } catch (error) {
+      console.error("Error organizing bookmarks:", error)
+    } finally {
+      setIsLoading(false)
+      setIsCategorizing(false)
+      setPreviewBookmarks([])
+    }
+  }
+
+  // Deny: abort process
+  const handleDenyPreview = () => {
+    setPreviewOpen(false)
+    setIsLoading(false)
+    setIsCategorizing(false)
+    setPreviewBookmarks([])
   }
 
   const handleClearAll = async () => {
@@ -539,6 +564,13 @@ export const Dashboard: React.FC = () => {
           </>
         )}
       </div>
+
+      <PreviewCategories
+        isOpen={previewOpen}
+        onAccept={handleAcceptPreview}
+        onDeny={handleDenyPreview}
+        categorizedBookmarks={previewBookmarks}
+      />
     </div>
   )
 }
