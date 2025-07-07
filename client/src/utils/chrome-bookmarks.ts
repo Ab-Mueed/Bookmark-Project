@@ -352,11 +352,16 @@ export class ChromeBookmarks {
       const categorizedStore =
         (await ChromeStorage.get<CategorizedBookmarkStore>(STORAGE_KEYS.CATEGORIZED_BOOKMARKS)) || {}
 
-      // Remove bookmarks that no longer exist in Chrome
+      // Remove bookmarks that no longer exist in Chrome OR are no longer in a categorized folder
       const updatedStore: CategorizedBookmarkStore = {}
       for (const [bookmarkId, storedData] of Object.entries(categorizedStore)) {
-        if (this.bookmarkStillExists(bookmarkId, allBookmarks)) {
-          updatedStore[bookmarkId] = storedData
+        const bookmark = allBookmarks.find(b => b.id === bookmarkId)
+        if (bookmark) {
+          const isInCategorizedFolder = await this.isInCategorizedFolder(bookmark)
+          if (isInCategorizedFolder) {
+            updatedStore[bookmarkId] = storedData
+          }
+          // else: do not add to updatedStore, so it is removed from storage
         }
       }
 

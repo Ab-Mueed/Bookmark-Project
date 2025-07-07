@@ -357,7 +357,8 @@ export const Dashboard: React.FC = () => {
                 disabled={isLoading}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  <title>Sync bookmarks</title>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.93 4.93a10 10 0 0114.14 0m0 0V1m0 3.93H17m-1.07 13.07a10 10 0 01-14.14 0m0 0V23m0-3.93H7" />
                 </svg>
               </Button>
             </div>
