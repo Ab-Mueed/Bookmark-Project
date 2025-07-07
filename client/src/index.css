@@ -1,0 +1,190 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* iOS 25 Liquid UI Design System */
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --liquid-primary: 59 130 246;
+    --liquid-secondary: 147 51 234;
+    --liquid-success: 34 197 94;
+    --liquid-warning: 251 191 36;
+    --liquid-error: 239 68 68;
+    --liquid-background: 248 250 252;
+    --liquid-surface: 255 255 255;
+    --liquid-surface-secondary: 241 245 249;
+    --liquid-text-primary: 15 23 42;
+    --liquid-text-secondary: 71 85 105;
+    --liquid-text-tertiary: 148 163 184;
+    --liquid-border: 226 232 240;
+    --liquid-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --liquid-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --liquid-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  /* Liquid Glassmorphism Components */
+  .liquid-glass {
+    @apply backdrop-blur-xl bg-white/70 border border-white/20 shadow-lg;
+  }
+
+  .liquid-card {
+    @apply liquid-glass rounded-md p-6 transition-all duration-300 hover:shadow-xl hover:bg-white/80;
+  }
+
+  .liquid-button {
+    @apply relative overflow-hidden rounded-md px-6 py-3 font-medium transition-all duration-300 
+           hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20;
+  }
+
+  .liquid-button-primary {
+    @apply liquid-button bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg 
+           hover:shadow-xl hover:from-blue-600 hover:to-purple-700;
+  }
+
+  .liquid-button-secondary {
+    @apply liquid-button bg-white/80 text-slate-700 border border-slate-200/50 
+           hover:bg-white hover:border-slate-300 hover:shadow-lg;
+  }
+
+  .liquid-button-ghost {
+    @apply liquid-button bg-transparent text-slate-600 hover:bg-slate-50/80;
+  }
+
+  /* Liquid Input Components */
+  .liquid-input {
+    @apply w-full rounded-md border border-slate-200/50 bg-white/50 px-4 py-3 
+           text-slate-700 placeholder-slate-400 backdrop-blur-sm
+           focus:border-blue-500/50 focus:bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-500/20
+           transition-all duration-300;
+  }
+
+  .liquid-search {
+    @apply liquid-input pr-12 bg-white/60 backdrop-blur-md;
+  }
+
+  /* Liquid Space Components */
+  .liquid-space {
+    @apply liquid-glass rounded-md p-4 transition-all duration-300 
+           hover:shadow-xl hover:bg-white/80 cursor-pointer;
+  }
+
+  .liquid-space-header {
+    @apply flex items-center justify-between mb-3;
+  }
+
+  .liquid-space-icon {
+    @apply w-10 h-10 rounded-md bg-gradient-to-br from-blue-500/20 to-purple-600/20 
+           flex items-center justify-center text-blue-600;
+  }
+
+  /* Liquid Navigation */
+  .liquid-nav {
+    @apply liquid-glass rounded-md p-2;
+  }
+
+  .liquid-nav-item {
+    @apply flex items-center space-x-3 px-4 py-3 rounded-md text-slate-600 
+           hover:bg-white/60 hover:text-slate-900 transition-all duration-200;
+  }
+
+  .liquid-nav-item.active {
+    @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg;
+  }
+
+  /* Liquid Animations */
+  .liquid-fade-in {
+    @apply animate-in fade-in duration-500;
+  }
+
+  .liquid-slide-up {
+    @apply animate-in slide-in-from-bottom-4 duration-500;
+  }
+
+  .liquid-scale-in {
+    @apply animate-in zoom-in-95 duration-300;
+  }
+
+  /* Liquid Gradients */
+  .liquid-gradient-primary {
+    @apply bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500;
+  }
+
+  .liquid-gradient-secondary {
+    @apply bg-gradient-to-br from-slate-50 to-slate-100;
+  }
+
+  .liquid-gradient-surface {
+    @apply bg-gradient-to-br from-white/80 to-white/40;
+  }
+
+  /* Liquid Shadows */
+  .liquid-shadow-sm {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  .liquid-shadow {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  }
+
+  .liquid-shadow-lg {
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  .liquid-shadow-xl {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-100/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300/50 rounded-full hover:bg-slate-400/50 transition-colors;
+}
+
+/* Smooth Animations */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Line Clamp Utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
