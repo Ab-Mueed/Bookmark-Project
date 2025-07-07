@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import type { CategorizedBookmark } from '../../types'
+import { getDomainFromUrl, getFaviconUrl } from "../../utils/bookmark-utils"
 
 interface SpaceProps {
   title: string
@@ -72,24 +73,6 @@ export const Space: React.FC<SpaceProps> = ({
 
   const handleBookmarkClick = (bookmark: CategorizedBookmark) => {
     onBookmarkClick?.(bookmark)
-  }
-
-  const getDomainFromUrl = (url: string): string => {
-    try {
-      const domain = new URL(url).hostname.replace('www.', '')
-      return domain.split('.')[0]
-    } catch {
-      return 'link'
-    }
-  }
-
-  const getFaviconUrl = (url: string): string => {
-    try {
-      const domain = new URL(url).hostname
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
-    } catch {
-      return ''
-    }
   }
 
   return (

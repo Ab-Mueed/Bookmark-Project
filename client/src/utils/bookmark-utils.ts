@@ -135,4 +135,27 @@ export const handleClearAll = async (
   } catch (error) {
     console.error("Error clearing all bookmarks:", error)
   }
+}
+
+export const getDomainFromUrl = (url: string): string => {
+  try {
+    const domain = new URL(url).hostname.replace('www.', '')
+    return domain.split('.')[0]
+  } catch {
+    return 'link'
+  }
+}
+
+export const getFaviconUrl = (url: string): string => {
+  try {
+    const domain = new URL(url).hostname
+    return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
+  } catch {
+    return ''
+  }
+}
+
+export const formatDate = (timestamp?: number): string => {
+  if (!timestamp) return 'Unknown date'
+  return new Date(timestamp).toLocaleDateString()
 } 

@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import type { CategorizedBookmark } from '../../types'
+import { getDomainFromUrl, getFaviconUrl, formatDate } from "../../utils/bookmark-utils"
 
 interface FolderItem {
   id: string
@@ -160,29 +161,6 @@ export const ColumnView: React.FC<ColumnViewProps> = ({
         window.location.href = bookmark.url
       }
     }
-  }
-
-  const getDomainFromUrl = (url: string): string => {
-    try {
-      const domain = new URL(url).hostname.replace('www.', '')
-      return domain.split('.')[0]
-    } catch {
-      return 'link'
-    }
-  }
-
-  const getFaviconUrl = (url: string): string => {
-    try {
-      const domain = new URL(url).hostname
-      return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
-    } catch {
-      return ''
-    }
-  }
-
-  const formatDate = (timestamp?: number): string => {
-    if (!timestamp) return 'Unknown date'
-    return new Date(timestamp).toLocaleDateString()
   }
 
   // Generate columns - only create columns if there are items to show
